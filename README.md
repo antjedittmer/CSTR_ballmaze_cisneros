@@ -7,8 +7,9 @@ https://onlinelibrary.wiley.com/doi/epdf/10.1002/rnc.4973
 
 
 Unicycle:
-**	for simulation, qpOASES solver  was used originally, as it was fast and robust. For sharing, this code uses quadprog, which is very slow and brittle (I added the condition to give the old solution whenever it fails). If you want to highlight the speed of the algorithms, consider changing to something else if you have it (Lemke algorithm, qpoases, osqp, or maybe matlab's built-in mpcativeset, I didn't use it because I'm using a very old version of MATLAB, which doesn't have it).
-**	At the end there is a variable animate_plot set to false by default, if you set it to true, just be aware that there is a pause so you have to press a key to keep running (did this to inspect possible infeasibilities in the path), the animation actually looks pretty cool how the prediction goes around the obstacles so you can maybe use it effectively in a presentation.
+
+*	for simulation, qpOASES solver  was used originally, as it was fast and robust. For sharing, this code uses quadprog, which is very slow and brittle (I added the condition to give the old solution whenever it fails). If you want to highlight the speed of the algorithms, consider changing to something else if you have it (Lemke algorithm, qpoases, osqp, or maybe matlab's built-in mpcativeset, I didn't use it because I'm using a very old version of MATLAB, which doesn't have it).
+*	At the end there is a variable animate_plot set to false by default, if you set it to true, just be aware that there is a pause so you have to press a key to keep running (did this to inspect possible infeasibilities in the path), the animation actually looks pretty cool how the prediction goes around the obstacles so you can maybe use it effectively in a presentation.
 
 
 CSTR:
