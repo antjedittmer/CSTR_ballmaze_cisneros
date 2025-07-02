@@ -1,4 +1,4 @@
-#Code for Paper "Nonlinear Model Predictive Control for models in quasi-LPV form"#
+# Code for Paper "Nonlinear Model Predictive Control for models in quasi-LPV form" #
 
 This folder contains the files to reproduce the results and figures presented in
 
