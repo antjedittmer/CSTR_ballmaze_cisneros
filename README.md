@@ -6,6 +6,8 @@ The paper can be found here:
 https://onlinelibrary.wiley.com/doi/epdf/10.1002/rnc.4973
 
 
+
+# Pablo's comment as a Readme #
 Unicycle:
 
 *	for simulation, qpOASES solver  was used originally, as it was fast and robust. For sharing, this code uses quadprog, which is very slow and brittle (I added the condition to give the old solution whenever it fails). If you want to highlight the speed of the algorithms, consider changing to something else if you have it (Lemke algorithm, qpoases, osqp, or maybe matlab's built-in mpcativeset, I didn't use it because I'm using a very old version of MATLAB, which doesn't have it).
