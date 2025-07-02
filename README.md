@@ -5,6 +5,7 @@ This folder contains the files to reproduce the results and figures presented in
 P. S. Gonzalez Cisneros & H. Werner, "Nonlinear Model Predictive Control for models in quasi-LPV form", International Journal of Robust and Nonlinear ControlVolume 30, Issue 10, Jul 2020, Pages3801-4163
 
 The paper can be found here:
+
 https://onlinelibrary.wiley.com/doi/epdf/10.1002/rnc.4973
 
 
