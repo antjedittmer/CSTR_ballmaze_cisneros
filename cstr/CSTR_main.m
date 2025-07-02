@@ -1,11 +1,16 @@
 clc;
-clear all;
+clear;
 close all;
 
 X0 = [0.2 370];
 Xref = [0.5 350];
 
 Ts = 0.03;
+
+dirParent = fullfile(fileparts(pwd), 'SynthesisToolsP');
+addpath(genpath(dirParent));
+
+
 
 %%%constants/nominal
 q = 100;

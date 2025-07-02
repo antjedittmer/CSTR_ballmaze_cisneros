@@ -66,16 +66,16 @@ for ii = 1:iterations
         diagnostic=optimize([C_delta*du+L*u_old;-C_delta*du-L*u_old]<=[L*lims.Tcmax;L*lims.Tcmin],...
         (h*x_k+s*du)'*Q_*(h*x_k+s*du)+du'*R_*du + (h_N*x_k+s_N*du)'*P*(h_N*x_k+s_N*du),sdpsettings('solver','sdpt3','verbose',0))
     else
-        diagnostic=optimize([[C_delta*du+L*u_old;-C_delta*du-L*u_old]<=[L*lims.Tcmax;L*lims.Tcmin] (h_N*x_k+s_N*du)'*W*(h_N*x_k+s_N*du)<=1],...
+        diagnostic = optimize([[C_delta*du+L*u_old;-C_delta*du-L*u_old]<=[L*lims.Tcmax;L*lims.Tcmin] (h_N*x_k+s_N*du)'*W*(h_N*x_k+s_N*du)<=1],...
         (h*x_k+s*du)'*Q_*(h*x_k+s*du)+du'*R_*du + (h_N*x_k+s_N*du)'*P*(h_N*x_k+s_N*du),sdpsettings('solver','sdpt3','verbose',0))  
     end
-    du=double(du);
+    du = double(du);
 
     du(find(du(~isfinite(du)))) = 0;
 
     x_aug_pred = h*(xk)+s*du;
     
-    %lpv prediction
+    % lpv prediction
     Xnl = zeros(hor+1,4);
     Xnl(1,:) = xk';
     for jj = 2:hor+1

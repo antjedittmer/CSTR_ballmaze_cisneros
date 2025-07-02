@@ -3,7 +3,6 @@ clear
 
 
 %% physical  params
-
 Ts = 0.03;
 horizon=25;
 nx = 2;
@@ -79,8 +78,6 @@ R = 1/300;
 % R  = .01;
 
 u_bar = 20;
-
-
 
 
 %% Yalmip setup
@@ -304,7 +301,7 @@ end
 LMIconst = [LMIconst t<0];
 
 Optim = t;
-solution  = solvesdp(LMIconst,Optim, SDPoptions)
+solution  = solvesdp(LMIconst,Optim, SDPoptions);
 
 Fval0=double(F0);
 Fval1=double(F1);

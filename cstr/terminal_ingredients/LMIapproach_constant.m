@@ -2,10 +2,6 @@ clc
 clear
 
 
-clc
-clear
-
-
 %% physical  params
 
 Ts = 0.03;
