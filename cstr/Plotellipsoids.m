@@ -56,7 +56,7 @@ tileSt = {
     'Parameter dependent LMI approach ellipsoid'
 };
 
-fs  = 10.5
+fs  = 10.5;
 legend(tileSt, 'FontSize',fs)
 
 

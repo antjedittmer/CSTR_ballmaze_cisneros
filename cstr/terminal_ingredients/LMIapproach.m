@@ -1,9 +1,4 @@
-clc
-clear
-
-
-clc
-clear
+clc; clear;
 
 
 %% physical  params
@@ -15,9 +10,9 @@ ni = 1;
 
 %% Pendulum on a cart
 
-q = 100;
-Tff = 350;
-V = 100;
+q = 100; % Input flow
+Tff = 350; % Feed temperature 
+V = 100; % Reactor volume
 p = 1000;
 Cp = 0.239;
 DH = -5e4;
@@ -36,31 +31,32 @@ Tmax = 370;
 %rho1 = t1, rho(2) = t1d
 
 A_ = @(rho1,rho2) [-q/V-k0*exp(-E_R/rho2)         -(E_R/rho2^2)*k0*exp(-E_R/rho2)*rho1;
-         -DH/(p*Cp)*k0*exp(-E_R/rho2)   -q/V-UA/(V*p*Cp)-(E_R/rho2^2)*DH/(p*Cp)*k0*exp(-E_R/rho2)*rho1];
+    -DH/(p*Cp)*k0*exp(-E_R/rho2)   -q/V-UA/(V*p*Cp)-(E_R/rho2^2)*DH/(p*Cp)*k0*exp(-E_R/rho2)*rho1];
 B_ = @(rho1,rho2) [0;
-         UA/(V*p*Cp*Ts)];
+    UA/(V*p*Cp*Ts)];
 
 Blin = @(rho1,rho2) [0;
-         UA/(V*p*Cp)];
-     
+    UA/(V*p*Cp)];
+
 %      A_ = @(rho) [0 [1 0];zeros(2,1) Ad(rho)];
-% 
+%
 % B_ = @(rho) [0;0;
 %          UA/(V*p*Cp*Ts)];
 
 %      A_ = @(rho) [zeros(2) eye(2);zeros(2) Ad(rho)];
-% 
+%
 % B_ = @(rho) [0;0;0;
 %          UA/(V*p*Cp*Ts)];
 
-    
 
-A = @(rho1,rho2) eye(nx)+Ts*A_(rho1,rho2);
+A = @(rho1,rho2) eye(nx) + Ts*A_(rho1,rho2);
 
 B2 = @(rho) Ts*B_(rho);
 
 B = @(rho1,rho2) Ts*Blin(rho1,rho2);
+
 %%
+
 basis{1}=@(rho)rho(1);
 basis{2}=@(rho)rho(1)/rho(2)^2;
 % basis{1}=@(rho)rho(1);
@@ -91,9 +87,9 @@ u_bar = 20;
 yalmip('clear');
 warning('off','YALMIP:strict')
 SDPoptions = sdpsettings('savesolveroutput', 1, ...
-                                 'savesolverinput' , 1, ...
-                                 'verbose'         , 1, ...
-                                 'solver'          ,'sdpt3');  
+    'savesolverinput' , 1, ...
+    'verbose'         , 1, ...
+    'solver'          ,'sdpt3');
 
 SDPoptions.sdpt3.maxit          = 150;
 
@@ -102,7 +98,6 @@ ni=size(B(1,1),2);
 
 
 %% Find initial F that minimizez H2 norm
-
 
 yalmip('clear');
 Yk = sdpvar(nx,nx,'symmetric');
@@ -128,26 +123,26 @@ for ii = 1:length(paramgrid)
             for ll = 1:length(paramgrid_d)
                 rho(1) = paramgrid(ii);     rho(2) = paramgrid2(jj);
                 rhod(1) = paramgrid_d(kk);  rhod(2) = paramgrid_d2(ll);
-                
+
                 Yk  = Y0 + basis{1}(rho)*Y1      + basis{2}(rho)*Y2;% + basis{3}(rho)*Y3;
                 Yk1 = Y0 + basis{1}(rho+rhod)*Y1 + basis{2}(rho+rhod)*Y2;% + basis{3}(rho+rhod)*Y3;
                 Xk    = X0 + basis{1}(rho)*X1 + basis{2}(rho)*X2;
-                
-                ellip = [ a*u_bar^2     Xk;
-                         Xk'            Yk];
-              
-                feasibility = [Yk                                          (A(paramgrid(ii),paramgrid2(jj))*Yk+B(paramgrid(ii),paramgrid2(jj))*Xk)' Yk          Xk';...
-                   A(paramgrid(ii),paramgrid2(jj))*Yk+B(paramgrid(ii),paramgrid2(jj))*Xk   Yk1                                                       zeros(nx)     zeros(nx,ni);...
-                   Yk                                                    zeros(nx)                                                 inv(Q)             zeros(nx,ni);...
-                   Xk                                                    zeros(ni,nx)                                              zeros(ni,nx)  inv(R)];    
 
-               LMIconst = [LMIconst feasibility>0 ellip>0 Yk>0];
-               
-               %%%%% These are the lines to limit the size of the ellipsoid by the projection of rho onto x
+                ellip = [ a*u_bar^2     Xk;
+                    Xk'            Yk];
+
+                feasibility = [Yk                                          (A(paramgrid(ii),paramgrid2(jj))*Yk+B(paramgrid(ii),paramgrid2(jj))*Xk)' Yk          Xk';...
+                    A(paramgrid(ii),paramgrid2(jj))*Yk+B(paramgrid(ii),paramgrid2(jj))*Xk   Yk1                                                       zeros(nx)     zeros(nx,ni);...
+                    Yk                                                    zeros(nx)                                                 inv(Q)             zeros(nx,ni);...
+                    Xk                                                    zeros(ni,nx)                                              zeros(ni,nx)  inv(R)];
+
+                LMIconst = [LMIconst feasibility>0 ellip>0 Yk>0];
+
+                %%%%% These are the lines to limit the size of the ellipsoid by the projection of rho onto x
                 LMIconst = [LMIconst [1 0]*Yk*[1 0]'<=a*((paramgrid(end)-paramgrid(1))/2)^2];
                 LMIconst = [LMIconst [0 1]*Yk*[0 1]'<=a*((paramgrid2(end)-paramgrid2(1))/2)^2];
-               %%%%%%%%%
-              
+                %%%%%%%%%
+
             end
         end
     end
@@ -189,17 +184,17 @@ Zz = inv(W([0.5,350]));
 Zproj = [II(:,ind1) II(:,ind2)]'*Zz*[II(:,ind1) II(:,ind2)];
 Wproj = inv(Zproj);
 Wch = chol(Wproj);
- ph = linspace(0, 2*pi, 100);
- z = [cos(ph);sin(ph)];
- ellipse = inv(Wch) * z;
- plot(ellipse(1,:), ellipse(2 ,:))
+ph = linspace(0, 2*pi, 100);
+z = [cos(ph);sin(ph)];
+ellipse = inv(Wch) * z;
+plot(ellipse(1,:), ellipse(2 ,:))
 
 hold on
 pause(0.01)
 Wsvd=svd(W([0.5,350]));
 
 
-
+save('CSTR_LMI.mat'); 
 
 
 
