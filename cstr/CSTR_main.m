@@ -6,8 +6,10 @@ Xref = [0.5 350];
 Ts = 0.03;
 
 % Add the Synthesis tool if necessary
-dirParent = fullfile(fileparts(pwd), 'SynthesisToolsP');
-addpath(genpath(dirParent));
+if isempty(which('yalmip'))
+    dirParent = fullfile(fileparts(pwd), 'SynthesisToolsP');
+    addpath(genpath(dirParent));
+end
 
 %%%constants/nominal
 q = 100;

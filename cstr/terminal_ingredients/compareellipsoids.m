@@ -73,7 +73,7 @@ plot(ellipse(1,:)+0.5, ellipse(2,:)+350,'k--','LineWidth',1.5)
 hold on
 volc = [volc prod(svd(Z(1)))];
 
-%% Add labels and title to block
+%% Add labels and title to plot
 
 xlabel('C_A (mol/l)'); ylabel('T (K)'); grid on;
 

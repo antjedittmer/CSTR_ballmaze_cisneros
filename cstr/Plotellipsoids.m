@@ -1,15 +1,16 @@
-% This creates Figure 2 in the paper
 
+
+%% Code to generate Figure 2, closed-loop trajectorie, predictions and ellipsoids for constant and parameter dependent case
 figDir = 'figDir';
-
 if ~isfolder(figDir)
     mkdir(figDir)
 end
 
-
 atk = 2; % timestep
 
 figure(2)
+
+%%  Load SimCT_LMIapproach_2it_nosaturatedU.mat
 load SimCT_LMIapproach_2it_nosaturatedU.mat
 plot(state_sim(atk:end,1),state_sim(atk:end,2),'--','Color',[0,0,0.8],'LineWidth',1.5)
 hold on
@@ -23,8 +24,9 @@ t = linspace(0, 2*pi, 100); % or any high number to make curve smooth
 z = [cos(t); sin(t)];
 ellipse = inv(Rchol([ind1,ind2],[ind1,ind2])) * z;
 plot(ellipse(1,:)+0.5, ellipse(2,:)+350,'Color',[0,0,0.8],'LineWidth',1.5)
-%%
 
+
+%% Load SimLMI_2it_nosaturatedU
 load SimLMI_2it_nosaturatedU
 
 plot(state_sim(atk:end,1),state_sim(atk:end,2),'--','Color',[0.8,0,0],'LineWidth',1.5)
@@ -41,11 +43,8 @@ ellipse = inv(Rchol([ind1,ind2],[ind1,ind2])) * z;
 plot(ellipse(1,:)+0.5, ellipse(2,:)+350,'Color',[0.8,0,0],'LineWidth',1.5)
 
 
+%% Add labels and title to plot
 xlabel('C_A (mol/l)'); ylabel('T (K)'); grid on;
-
-% black (const), grey (BMI 1), red (BM1 10), blue (LMI)
-% tileSt = {'Constant ellipsoid', 'parameter dependent ellipsoids BMI approach 1st iteration', 'parameter dependent '...
-% 'ellipsoids BMI approach 10th iteration','parameter dependent ellipsoid of the presented LMI approach'};
 
 tileSt = {
     'Constant closed loop trajectories', ...
