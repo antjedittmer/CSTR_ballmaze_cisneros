@@ -14,7 +14,7 @@ The following code can be used to recreate the figures from the paper:
 * Figure 2: cstr/Plotellipsoids.m 
 * Figure 4: unicycle_ballmaze/Ballmaze_main.m
 
-
+The paper was presented and discussed in the DLR Institute Institute of Flight System's Internal Controls Seminar on July 3rd, 2025. 
 
 # Pablo's comments as a Readme #
 Unicycle:
