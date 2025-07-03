@@ -31,3 +31,6 @@ CSTR:
 Synthesis tools:
 This folder's contents have to be added to the path to calculate the terminal ingredients and to solve the cstr problem, as it is an SOCP and can be solved using quadprog. It contains yalmip and sdpt3. It is included because this is the version that works with this code.
 
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+FITNESS FOR A PARTICULAR PURPOSE.
