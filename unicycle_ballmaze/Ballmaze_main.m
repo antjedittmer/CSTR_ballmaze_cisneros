@@ -11,10 +11,11 @@ clc; clear;  close all;
 %% Set parameters
 
 % Load data from file if available
-loadData = 0;
+loadData = 1;
 
 % Animate plot for trouble shooting or to generate a movie
-animate_plot = 0;
+animate_plot = 1;
+save_to_file = 1; % save plots to file and generate movie
 
 % Input limits
 u_lim = 1;
@@ -41,7 +42,7 @@ l = 0.1;
 iterations = 2;
 
 if exist('DataForPlot.mat','file') == 2 && loadData
-    load('DataForPlot.mat','time', 'state_sim','U','refx','refy','ex_t');
+    load('DataForPlot.mat','time', 'state_sim','U','refx','refy','ex_t','XX','XXref');
 
 else
 
@@ -154,7 +155,7 @@ else
 
 
     end
-    save('DataForPlot.mat','time', 'state_sim','U','refx','refy','ex_t');
+    save('DataForPlot.mat','time', 'state_sim','U','refx','refy','ex_t','XX',"XXref");
 end
 %% time plots
 
@@ -174,4 +175,4 @@ title(sprintf('Control inputs, mean optimization time: %2.2f s', mean(ex_t)))
 %% x-y plots
 figure(1)
 
-plotmaze_ref(Cx,Cy,radius,refx,state_sim,animate_plot,refy)
+plotmaze_ref(Cx,Cy,radius,refx,state_sim,animate_plot,refy,XX,XXref,save_to_file)
