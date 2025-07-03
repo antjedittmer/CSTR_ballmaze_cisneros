@@ -116,10 +116,11 @@ else
 
 
         %codegen_func_DEBUG_velocityminimal(y,vel,iterations,u_lim,N,x_aug_pred,Q_,R_,P,optionsQ,ref,Lc,u_old,C_delta,L,Cx,Cy)
-        
+        % calculate control and state prediction trajectory
         y = state_sim(end,1:4)';
+        u_old = output.u';
         [output.u, X, solv, xxref, Xit] = ...
-            codegen_func_DEBUG_velocityminimal(y,vel,iterations,ulim,N,X,Q_,R_,P,0,ref,Lc,output.u',C_delta,L,Cx,Cy);
+            codegen_func_DEBUG_velocityminimal(y,vel,iterations,ulim,N,X,Q_,R_,P,ref,Lc,u_old,C_delta,L,Cx,Cy);
 
         tt = toc; % end cputime
 

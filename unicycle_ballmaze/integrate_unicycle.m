@@ -1,4 +1,8 @@
 function xd = integrate_unicycle(t, x, u)
+% integrate_unicycle models the unicycle dynamics.
+
+% Pablo S.G. Cisneros, Herbert Werner, ICS TUHH
+% modified for presentation at DLR-FT Seminar: Antje Dittmer
     m = 1;
     I = 0.015;
     

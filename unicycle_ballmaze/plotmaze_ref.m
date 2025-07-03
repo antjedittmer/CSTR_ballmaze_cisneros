@@ -1,4 +1,9 @@
 function plotmaze_ref(Cx,Cy,radius,refx,state_sim,animate_plot,refy)
+% plotmaze_ref plots the unicycle path in the ballmaze. Run Ballmaze_main
+% or load DataForPlot if available.
+
+% Pablo S.G. Cisneros, Herbert Werner, ICS TUHH
+% modified for presentation at DLR-FT Seminar: Antje Dittmer
 
 th = 0:pi/50:2*pi;
 for i = 1:length(Cx)
@@ -9,7 +14,7 @@ for i = 1:length(Cx)
 end
 % plot ([-0.8 -0.8],[-1.1 1.1],'k-','LineWidth',1.5);
 % plot ([-0.8 1.1],[-1.1 -1.1],'k-','LineWidth',1.5);
-%  axis([-0.2 2.2 -0.2 2.2])
+% axis([-0.2 2.2 -0.2 2.2])
 
 cl = lines; % get line color
 plot(refx(1:800),refy(1:800),'k--'); 

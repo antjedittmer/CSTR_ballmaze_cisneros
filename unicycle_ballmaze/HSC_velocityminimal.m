@@ -1,4 +1,26 @@
-function [htemp,stemp,Hess,ef,Cs,ba] = HSC_velocityminimal(x_aug_pred,hor,Q_,R_,P,x_k,ref,Lc,Cx,Cy)
+function [Lambda,S,Hess,ef,Cs,ba] = HSC_velocityminimal(X,N,Q_,R_,P,x_k,ref,Lc,Cx,Cy)
+% HSC_velocityminimal calculates matrices and boundaries for the QP
+% otpimization for finding inputs for a q-LMPC with
+% codegen_func_DEBUG_velocityminimal.
+%
+% Inputs
+% - X: State prediction trajectory last sample
+% - N: Samples prediction horizon
+% - Q_,R_,P: Cost matrices
+% - x_k: Current state
+% - ref: Reference
+% - uold: Input of last sample
+% - C_delta: Part of constraint matrix:  Cs = [C_delta; -C_delta; Cs_]
+% - L: Multiplier for constraint vector: [u_lim - L*u_old; u_lim + L*u_old; ba]
+% - Cx, Cy: Obstacle centers
+%
+% Output
+% - the matrices Lambda and S for the state prediction trajectory, 
+% - the Hessian Hess and gradient ef
+% - Boundary matrix and vector Cs_ and ba
+
+% Pablo S.G. Cisneros, Herbert Werner, ICS TUHH
+% modified for presentation at DLR-FT Seminar: Antje Dittmer
 
 % number of states and input
 nx = 9; ni=2;
@@ -12,10 +34,10 @@ Ts = 0.025;
 ncirc = length(Cx);
 
 % parameter trajectories
-p1=[x_k(1); x_aug_pred(1:nx:nx*hor)];
-p2=[x_k(2); x_aug_pred(2:nx:nx*hor)];
-t1=[x_k(4); x_aug_pred(4:nx:nx*hor)];
-t2=[x_k(3); x_aug_pred(3:nx:nx*hor)];
+p1 = [x_k(1); X(1:nx:nx*N)];
+p2 = [x_k(2); X(2:nx:nx*N)];
+t1 = [x_k(4); X(4:nx:nx*N)];
+t2 = [x_k(3); X(3:nx:nx*N)];
 ref_N = ref(end-(nx-1):end);
 
 rho1 = p1(2);
@@ -58,14 +80,14 @@ for circ = 1:ncirc
     baeval = [baeval; -rho1^2+2*Cx(circ)*rho1-rho2^2+2*Cy(circ)*rho2];
 end
 
-ctemp = zeros(hor*ncirc,nx*hor);
-stemp = zeros(nx*hor,ni*hor);
-htemp = zeros(nx*hor,nx);
-htemp(1:nx,1:nx) = A0;
-stemp(1:nx,1:ni) = B0;
+ctemp = zeros(N*ncirc,nx*N);
+S = zeros(nx*N,ni*N);
+Lambda = zeros(nx*N,nx);
+Lambda(1:nx,1:nx) = A0;
+S(1:nx,1:ni) = B0;
 ctemp(1:ncirc,1:nx) = C0;
 
-for mm=1:hor-1
+for mm = 1:N-1
     rho1 = p1(mm+2);
     rho2 = p2(mm+2);
     rhot = t1(mm+1);
@@ -92,19 +114,19 @@ for mm=1:hor-1
         baeval = [baeval; -rho1^2+2*Cx(circ)*rho1-rho2^2+2*Cy(circ)*rho2];
     end
 
-    stemp(mm*nx+1:(mm+1)*nx,1:mm*ni) = aeval*stemp((mm-1)*nx+1:mm*nx,1:mm*ni);
-    stemp(mm*nx+1:(mm+1)*nx,mm*ni+1:(mm+1)*ni) = beval;
-    htemp(mm*nx+1:(mm+1)*nx,1:nx) = aeval*htemp((mm-1)*nx+1:mm*nx,:);
+    S(mm*nx+1:(mm+1)*nx,1:mm*ni) = aeval*S((mm-1)*nx+1:mm*nx,1:mm*ni);
+    S(mm*nx+1:(mm+1)*nx,mm*ni+1:(mm+1)*ni) = beval;
+    Lambda(mm*nx+1:(mm+1)*nx,1:nx) = aeval*Lambda((mm-1)*nx+1:mm*nx,:);
     ctemp(mm*ncirc+1:mm*ncirc+ncirc,mm*nx+1:(mm+1)*nx) = ceval;
 end
 
-s_N = stemp(nx*(hor-1)+1:end,:);
-h_N = htemp(nx*(hor-1)+1:end,:);
+s_N = S(nx*(N-1)+1:end,:);
+h_N = Lambda(nx*(N-1)+1:end,:);
 
-Hess = 2*(stemp'*Q_*stemp+R_ + s_N'*P*s_N);
-ef = 2*((stemp'*Q_*htemp+s_N'*P*h_N)*x_k-(stemp'*Q_*ref+s_N'*P*ref_N));
+Hess = 2*(S'*Q_*S+R_ + s_N'*P*s_N);
+ef = 2*((S'*Q_*Lambda+s_N'*P*h_N)*x_k-(S'*Q_*ref+s_N'*P*ref_N));
 
 
-Cs = ctemp*stemp;
-ba = Lc + ctemp*x_aug_pred-ctemp*htemp*x_k-baeval; %the additional ctemp*x_aug_pred correspondons to -grad(f)*rho from grad(f)*(x-rho)
+Cs = ctemp*S;
+ba = Lc + ctemp*X-ctemp*Lambda*x_k-baeval; %the additional ctemp*x_aug_pred correspondons to -grad(f)*rho from grad(f)*(x-rho)
 end

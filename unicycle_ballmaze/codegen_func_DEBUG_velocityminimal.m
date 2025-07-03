@@ -1,7 +1,6 @@
-function [u,Xold,solv,xref,XX] = codegen_func_DEBUG_velocityminimal(y,vel,iterations,u_lim,N,X,Q_,R_,P,optionsQ,ref,Lc,u_old,C_delta,L,Cx,Cy)
+function [u,Xold,solv,xref,XX] = codegen_func_DEBUG_velocityminimal(y,vel,iterations,u_lim,N,X,Q_,R_,P,ref,Lc,u_old,C_delta,L,Cx,Cy)
 % codegen_func_DEBUG_velocityminimal calculates the optimal control input
-% trajectory. 
-% It calls HSC_velocityminimal to calculate 
+% trajectory. It calls HSC_velocityminimal to calculate 
 % - the matrices Lambda and S for the state prediction trajectory, 
 % - the Hessian Hess and gradient ef
 % - Boundary matrix and vector Cs_ and ba
@@ -11,7 +10,28 @@ function [u,Xold,solv,xref,XX] = codegen_func_DEBUG_velocityminimal(y,vel,iterat
 % Inputs
 % - y: Output part of state vector x_k = [y;vel]
 % - vel: Velocity part of state vector  x_k = [y;vel]
-% - u_lim
+% - iteration: number of iterations for prdiction calculation
+% - u_lim: Limit on inputs
+% - N: Samples prediction horizon
+% - X: State prediction trajectory last sample
+% - Q_,R_,P: Cost matrices
+% - ref: Reference/steady state trajectories
+% - Lc: Constant matrix used in constraint computations
+% - uold: Input of last sample
+% - C_delta: Part of constraint matrix:  Cs = [C_delta; -C_delta; Cs_]
+% - L: Multiplier for constraint vector: [u_lim - L*u_old; u_lim + L*u_old; ba]
+% - Cx, Cy: Obstacle centers
+%
+% Outputs
+% - u: New control input
+% - Xold: State prediction trajectory
+% - solv: Solver time (currently unused)
+% - xref: Reference trajectory
+% - XX: State prediction trajectory for all iterations
+
+% Pablo S.G. Cisneros, Herbert Werner, ICS TUHH
+% modified for presentation at DLR-FT Seminar: Antje Dittmer
+
 
 x_k = [y;vel];
 nx = 9;
@@ -33,27 +53,28 @@ end
 XX = [];
 for ii = 1:iterations
 
-    %%% HSC: Calculate 
+    %%% HSC: Calculate Lambda, S, Hessian, gradient, boundaries
     [Lambda,S,Hess,ef,Cs_,ba] = HSC_velocityminimal(X,N,Q_,R_,P,x_k,ref,Lc,Cx,Cy);
     Hess = 0.5*(Hess + Hess'); % Make sure Hessian is symmetric
 
     Cs = [C_delta; -C_delta; Cs_];
-    uba = [u_lim-L*u_old;u_lim+L*u_old;ba];
+    uba = [u_lim - L*u_old; u_lim + L*u_old; ba];
 
-    %     [du,~,flag,~,~,auxout] = qpOASES(Hess,ef,Cs,[],[],[],uba,optionsQ);
-    % Options for quadprog
-    options = optimoptions('quadprog', 'Display', 'none');
-
+    %%% Calculate optimal trajectory
+    % For now: Choose optimizer by simply commenting out the one not used
+    % optionsQ = 0;
+    % [du,~,flag,~,~,auxout] = qpOASES(Hess,ef,Cs,[],[],[],uba,optionsQ);
+    
+    options = optimoptions('quadprog', 'Display', 'none'); % Options for quadprog
     du = quadprog(Hess,ef,Cs,uba,[],[],[],[],[],options);
 
-
-    if ~isempty(du)
+    if ~isempty(du) %If solution available: Update state trajectory
         X = Lambda*x_k + S*du;
     end
     XX = [XX X]; %#ok<*AGROW>
 end
 
-    %     solv = solv + auxout.cpuTime;
+    %  solv = solv + auxout.cpuTime;
     solv = solv + 0;
 
 
