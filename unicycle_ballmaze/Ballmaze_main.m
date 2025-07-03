@@ -1,9 +1,17 @@
 clc; clear;  close all;
 
+% Script to simulate a unicycle navigating a ballmaze using q-LMPC, as
+% described in the paper "Nonlinear Model Predictive Control for models in 
+% quasi-LPV form"
+
+% Pablo S.G. Cisneros, Herbert Werner, ICS TUHH
+% modified for presentation at DLR-FT Seminar: Antje Dittmer
+
+
 %% Set parameters
 
 % Load data from file if available
-loadData = 1;
+loadData = 0;
 
 % Animate plot for trouble shooting or to generate a movie
 animate_plot = 0;
@@ -29,16 +37,19 @@ m = 1;
 I = 0.015;
 l = 0.1;
 
+% Number of iterations in q-LMPC
+iterations = 2;
+
 if exist('DataForPlot.mat','file') == 2 && loadData
     load('DataForPlot.mat','time', 'state_sim','U','refx','refy','ex_t');
 
 else
 
     %% MPC tuning
-    N = 30;
-    P = diag([1000 1000 .1 1 0 0 0 0 0]);
-    Q = diag([100 100 .01 .1 0.01 0.01 1 0.01 0.01]);
-    R  = diag([.01, .1]);
+    N = 30; % Samples prediction horizon
+    P = diag([1000 1000 .1 1 0 0 0 0 0]); % cost terminal states
+    Q = diag([100 100 .01 .1 0.01 0.01 1 0.01 0.01]); % cost states
+    R  = diag([.01, .1]); % cost controls
 
     Q_ = kron(eye(N),Q);
     R_ = kron(eye(N),R);
@@ -103,8 +114,12 @@ else
             vel = zeros(5,1);
         end
 
+
+        %codegen_func_DEBUG_velocityminimal(y,vel,iterations,u_lim,N,x_aug_pred,Q_,R_,P,optionsQ,ref,Lc,u_old,C_delta,L,Cx,Cy)
+        
+        y = state_sim(end,1:4)';
         [output.u, X, solv, xxref, Xit] = ...
-            codegen_func_DEBUG_velocityminimal(state_sim(end,1:4)',vel,2,ulim,N,X,Q_,R_,P,0,ref,Lc,output.u',C_delta,L,Cx,Cy);
+            codegen_func_DEBUG_velocityminimal(y,vel,iterations,ulim,N,X,Q_,R_,P,0,ref,Lc,output.u',C_delta,L,Cx,Cy);
 
         tt = toc; % end cputime
 
@@ -127,12 +142,15 @@ else
         iter = iter+1;
         nextTime = iter*Ts;
 
+        if abs(round(10*time(end)) - 10*time(end)) < 0.0001
+            fprintf('Time: %2.2f of %2.2f \n', time(end),Tf)
+        end
+
         time = [time nextTime];
 
         U = [U; sim_input.u];
 
 
-        disp(time(end));
 
     end
     save('DataForPlot.mat','time', 'state_sim','U','refx','refy','ex_t');

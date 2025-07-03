@@ -1,5 +1,17 @@
-function [u,Xold,solv,xref,XX] = codegen_func_DEBUG_velocityminimal(y,vel,iterations,u_lim,hor,x_aug_pred,Q_,R_,P,optionsQ,ref,Lc,u_old,C_delta,L,Cx,Cy)
-
+function [u,Xold,solv,xref,XX] = codegen_func_DEBUG_velocityminimal(y,vel,iterations,u_lim,N,X,Q_,R_,P,optionsQ,ref,Lc,u_old,C_delta,L,Cx,Cy)
+% codegen_func_DEBUG_velocityminimal calculates the optimal control input
+% trajectory. 
+% It calls HSC_velocityminimal to calculate 
+% - the matrices Lambda and S for the state prediction trajectory, 
+% - the Hessian Hess and gradient ef
+% - Boundary matrix and vector Cs_ and ba
+% These are then used to find the optimal control and state trajectory,
+% either with qpOASES or quadprog.
+% 
+% Inputs
+% - y: Output part of state vector x_k = [y;vel]
+% - vel: Velocity part of state vector  x_k = [y;vel]
+% - u_lim
 
 x_k = [y;vel];
 nx = 9;
@@ -10,21 +22,22 @@ solv = 0;
 
 %% MPC
 
-if isempty(x_aug_pred)%zeros(120,1)
-    x_aug_pred = kron(ones(hor,1),x_k);
+if isempty(X)%zeros(120,1)
+    X = kron(ones(N,1),x_k);
 
 else
-    x_aug_pred(1:end-nx) = x_aug_pred(nx+1:end);
+    X(1:end-nx) = X(nx+1:end);
 end
 
 % count = 0;
 XX = [];
 for ii = 1:iterations
-    %%% HSC
-    [h,s,Hess,ef,Cs_,ba] = HSC_velocityminimal(x_aug_pred,hor,Q_,R_,P,x_k,ref,Lc,Cx,Cy);
-    Hess = 0.5*(Hess +Hess'); % Make sure Hessian is symmetric
 
-    Cs = [C_delta;-C_delta;Cs_];
+    %%% HSC: Calculate 
+    [Lambda,S,Hess,ef,Cs_,ba] = HSC_velocityminimal(X,N,Q_,R_,P,x_k,ref,Lc,Cx,Cy);
+    Hess = 0.5*(Hess + Hess'); % Make sure Hessian is symmetric
+
+    Cs = [C_delta; -C_delta; Cs_];
     uba = [u_lim-L*u_old;u_lim+L*u_old;ba];
 
     %     [du,~,flag,~,~,auxout] = qpOASES(Hess,ef,Cs,[],[],[],uba,optionsQ);
@@ -33,14 +46,16 @@ for ii = 1:iterations
 
     du = quadprog(Hess,ef,Cs,uba,[],[],[],[],[],options);
 
+
+    if ~isempty(du)
+        X = Lambda*x_k + S*du;
+    end
+    XX = [XX X]; %#ok<*AGROW>
+end
+
     %     solv = solv + auxout.cpuTime;
     solv = solv + 0;
 
-    if ~isempty(du)
-        x_aug_pred =h*x_k+s*du;
-    end
-    XX = [XX x_aug_pred]; %#ok<*AGROW>
-end
 
 if ~isempty(du)
     u = (du(1:2)+u_old)';
@@ -50,7 +65,7 @@ else
     % and shifting it every infeasible timestep
     u = u_old';
 end
-Xold = x_aug_pred;
+Xold = X;
 xref = ref;
 
  end

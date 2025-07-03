@@ -1,5 +1,9 @@
 function [htemp,stemp,Hess,ef,Cs,ba] = HSC_velocityminimal(x_aug_pred,hor,Q_,R_,P,x_k,ref,Lc,Cx,Cy)
+
+% number of states and input
 nx = 9; ni=2;
+
+% Values for Cx, Cy
 % Cx = [1/3-0.5, 1/3-0.5, 1/3-0.5,   1-0.5, 1-0.5,   1-0.5, 5/3-0.5, 5/3-0.5, 5/3-0.5];
 % Cy = [1/3-1,   1-1, 5/3-1, 1/3-1, 1-1, 5/3-1, 1/3-1,   1-1, 5/3-1];
 
@@ -19,7 +23,7 @@ rho2 = p2(2);
 rhot = t1(1);
 rhov = t2(1);
 
-
+% Unicycle model
 Ad = [0 0 cos(rhot)  -rhov*sin(rhot) 0;
     0 0 sin(rhot)  rhov*cos(rhot)  0;
     0 0 0          0               0;
@@ -93,15 +97,14 @@ for mm=1:hor-1
     htemp(mm*nx+1:(mm+1)*nx,1:nx) = aeval*htemp((mm-1)*nx+1:mm*nx,:);
     ctemp(mm*ncirc+1:mm*ncirc+ncirc,mm*nx+1:(mm+1)*nx) = ceval;
 end
+
 s_N = stemp(nx*(hor-1)+1:end,:);
 h_N = htemp(nx*(hor-1)+1:end,:);
 
-
-Hess = 2*(stemp'*Q_*stemp+R_+s_N'*P*s_N);
+Hess = 2*(stemp'*Q_*stemp+R_ + s_N'*P*s_N);
 ef = 2*((stemp'*Q_*htemp+s_N'*P*h_N)*x_k-(stemp'*Q_*ref+s_N'*P*ref_N));
 
 
-
 Cs = ctemp*stemp;
-ba = Lc+ctemp*x_aug_pred-ctemp*htemp*x_k-baeval; %the additional ctemp*x_aug_pred correspondons to -grad(f)*rho from grad(f)*(x-rho)
+ba = Lc + ctemp*x_aug_pred-ctemp*htemp*x_k-baeval; %the additional ctemp*x_aug_pred correspondons to -grad(f)*rho from grad(f)*(x-rho)
 end
