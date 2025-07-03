@@ -4,6 +4,10 @@ clear; clc; close all;
 % CSTR_FYZ.mat, CSTR_LMI.mat, and CSTR_LMI_constant.mat ara included in the
 % git directory, but can me reproduces with the respective m-files
 
+% Pablo S.G. Cisneros, Herbert Werner, ICS TUHH
+% modified for presentation at DLR-FT Seminar: Antje Dittmer
+
+
 figDir = 'figDir';
 if ~isfolder(figDir)
     mkdir(figDir)

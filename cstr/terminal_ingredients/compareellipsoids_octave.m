@@ -2,6 +2,8 @@ ind1 = 1;
 ind2 = 2;
 clear clc
 
+% Pablo S.G. Cisneros, Herbert Werner, ICS TUHH
+
 load CSTR_FYZ
 %W = @(rho) Wval{1}(rho);
 %Z = @(rho) Zval{1}(rho);

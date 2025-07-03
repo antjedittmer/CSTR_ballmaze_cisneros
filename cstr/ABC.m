@@ -1,5 +1,8 @@
 function [Atemp,Btemp] = ABC(rho1,rho2)
+% ABC calculates the system and input matrix of the CSTR
 
+% Pablo S.G. Cisneros, Herbert Werner, ICS TUHH
+% modified for presentation at DLR-FT Seminar: Antje Dittmer
 
 %#codegen
 %%%constants/nominal

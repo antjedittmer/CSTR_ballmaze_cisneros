@@ -1,5 +1,10 @@
 clc;  clear; close all;
 
+% Main function to calculate the CSTR qLMPC.
+
+% Pablo S.G. Cisneros, Herbert Werner, ICS TUHH
+
+
 X0 = [0.2 370];
 Xref = [0.5 350];
 

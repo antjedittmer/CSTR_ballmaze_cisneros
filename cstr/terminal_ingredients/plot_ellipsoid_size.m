@@ -1,3 +1,5 @@
+% Pablo S.G. Cisneros, Herbert Werner, ICS TUHH
+
 for ii = 1:20
     xx(ii)=prod(svd(Zval{ii}([0.4,350])));
 end

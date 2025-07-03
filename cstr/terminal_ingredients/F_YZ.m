@@ -1,6 +1,9 @@
 clc
 clear
 
+% Pablo S.G. Cisneros, Herbert Werner, ICS TUHH
+% modified for presentation at DLR-FT Seminar: Antje Dittmer
+
 %% physical  params
 Ts = 0.03;
 horizon=25;
