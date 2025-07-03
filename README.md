@@ -16,7 +16,7 @@ The following code can be used to recreate the figures from the paper:
 
 The paper was presented and discussed in the DLR Institute of Flight System's Internal Controls Seminar on July 3rd, 2025. 
 
-# Pablo's comments as a Readme #
+# Readme #
 Unicycle:
 
 *	The original simulations used the qpOASES solver, which offered both speed and robustness. For the shared version of this code, quadprog is used instead for broader compatibility. However, quadprog is significantly slower and less reliable. To handle solver failures, the code is designed to fall back to the previous solution. If demonstrating algorithm speed is important, consider replacing quadprog with a more efficient alternative such as the Lemke algorithm, qpOASES, OSQP, or MATLAB’s mpcActiveSet (note: the latter is unavailable in older MATLAB versions and was therefore not used here).
