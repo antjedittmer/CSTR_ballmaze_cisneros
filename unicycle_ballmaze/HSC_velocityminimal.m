@@ -1,7 +1,7 @@
 function [Lambda,S,Hess,ef,Cs,ba] = HSC_velocityminimal(X,N,Q_,R_,P,x_k,ref,Lc,Cx,Cy)
 % HSC_velocityminimal calculates matrices and boundaries for the QP
 % otpimization for finding inputs for a q-LMPC with
-% codegen_func_DEBUG_velocityminimal.
+% codegen_func_DEBUG_velocityminimal. This is for the unicycle example.
 %
 % Inputs
 % - X: State prediction trajectory last sample

@@ -1,4 +1,8 @@
 function xd = integrate_cstr(t, x, u) %#ok<INUSD>
+% integrate_cstr models the cstr dynamics.
+
+% Pablo S.G. Cisneros, Herbert Werner, ICS TUHH
+% modified for presentation at DLR-FT Seminar: Antje Dittmer
 
 q = 100;
 Tf = 350;

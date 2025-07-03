@@ -2,7 +2,7 @@
 
 This folder contains the files to reproduce the results and figures (in MATLAB version R2023a) presented in
 
-P. S. Gonzalez Cisneros & H. Werner, "Nonlinear Model Predictive Control for models in quasi-LPV form", International Journal of Robust and Nonlinear ControlVolume 30, Issue 10, Jul 2020, Pages 3801-4163
+P. S. Gonzalez Cisneros & H. Werner, "Nonlinear Model Predictive Control for models in quasi-LPV form", International Journal of Robust and Nonlinear Control, Volume 30, Issue 10, Jul 2020, Pages 3801-4163
 
 The paper can be found here:
 

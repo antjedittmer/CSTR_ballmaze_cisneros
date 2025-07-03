@@ -1,3 +1,12 @@
+clc; clear;
+
+%% Code to generate Figure 2, closed-loop trajectorie, predictions and 
+% ellipsoids for constant and parameter dependent case described in the 
+% paper "Nonlinear Model Predictive Control for models in 
+% quasi-LPV form"
+
+% Pablo S.G. Cisneros, Herbert Werner, ICS TUHH
+% modified for presentation at DLR-FT Seminar: Antje Dittmer
 
 
 %% Code to generate Figure 2, closed-loop trajectorie, predictions and ellipsoids for constant and parameter dependent case

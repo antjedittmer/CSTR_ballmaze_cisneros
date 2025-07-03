@@ -117,6 +117,7 @@ while time(end) < Tf
     time = [time nextTime];
     U = [U; sim_input.u];
 end
+
 %% Save results
 if use_constant_PW
     save('sim_CT.mat');
