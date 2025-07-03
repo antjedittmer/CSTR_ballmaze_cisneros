@@ -23,13 +23,11 @@ function [Lambda,S,Hess,ef,Cs,ba] = HSC_velocityminimal(X,N,Q_,R_,P,x_k,ref,Lc,C
 % modified for presentation at DLR-FT Seminar: Antje Dittmer
 
 % number of states and input
-nx = 9; ni=2;
+nx = 9; ni = 2;
 
 % Values for Cx, Cy
 % Cx = [1/3-0.5, 1/3-0.5, 1/3-0.5,   1-0.5, 1-0.5,   1-0.5, 5/3-0.5, 5/3-0.5, 5/3-0.5];
 % Cy = [1/3-1,   1-1, 5/3-1, 1/3-1, 1-1, 5/3-1, 1/3-1,   1-1, 5/3-1];
-
-
 Ts = 0.025;
 ncirc = length(Cx);
 
@@ -80,6 +78,7 @@ for circ = 1:ncirc
     baeval = [baeval; -rho1^2+2*Cx(circ)*rho1-rho2^2+2*Cy(circ)*rho2];
 end
 
+% Loop for building Lambda and S matrices
 ctemp = zeros(N*ncirc,nx*N);
 S = zeros(nx*N,ni*N);
 Lambda = zeros(nx*N,nx);
@@ -125,7 +124,6 @@ h_N = Lambda(nx*(N-1)+1:end,:);
 
 Hess = 2*(S'*Q_*S+R_ + s_N'*P*s_N);
 ef = 2*((S'*Q_*Lambda+s_N'*P*h_N)*x_k-(S'*Q_*ref+s_N'*P*ref_N));
-
 
 Cs = ctemp*S;
 ba = Lc + ctemp*X-ctemp*Lambda*x_k-baeval; %the additional ctemp*x_aug_pred correspondons to -grad(f)*rho from grad(f)*(x-rho)
